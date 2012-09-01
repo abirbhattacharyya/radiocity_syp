@@ -1,0 +1,25 @@
+<%= render :partial => "/partials/my_dashboard" %>
+<h1>Have fun & manage your dynamic pricing campaigns!</h1>
+<div class="columns">
+    <div class="column wide">
+        <div class="capsule">
+            <div class="cinner">
+                <ol>
+                  <% @notifications.each_with_index do |notify, index| %>
+                      <li>
+                        <%if notify[0].eql? "profile"%>
+                          You created your profile, <%= notify[1].to_date.strftime("%B %d, %Y") %>
+                        <%else%>
+                          You uploaded your <%=notify[0]%> & margins, <%= notify[1].to_date.strftime("%B %d, %Y") %>
+                        <% end %>
+                      </li>
+                  <% end %>
+                </ol>
+            </div><!-- .cinner -->
+            <div class="ctl"></div><div class="ctc"></div><div class="ctr"></div>
+            <div class="cml"></div><div class="cmr"></div>
+            <div class="cbl"></div><div class="cbc"></div><div class="cbr"></div>
+        </div><!-- .capsule -->
+
+    </div><!-- .column.wide -->
+</div><!-- .columns -->

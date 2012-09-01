@@ -1,0 +1,46 @@
+<script type="text/javascript" src="/assets/jscolor/jscolor.js"></script>
+<%= content_tag(:h1, (current_user.profile ? "Here is what you told us, Edit your profile" : "Tell us your business profile")) %>
+
+<%#= error_messages_for(:profile, :order => [:name, :web_url, :address1, :address2, :city, :state, :zip, :phone, :email, :twitter_id], :message => "", :header_message => "")%>
+<%= form_for :profile, :url => profile_path, :html => {:multipart => true} do |f| %>
+  <p class="ctrl">
+      <%= label_tag(:name, "Name") %>
+      <%= f.text_field :name, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:address, "Address") %>
+      <%= f.text_field :address, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:phone, "Customer Service #") %>
+      <%= f.text_field :phone, :maxLength => 14, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:email, "Customer Service Email") %>
+      <%= f.text_field :email, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:twitter, "Twitter") %>
+      <%= f.text_field :twitter, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:facebook_url, "Facebook Url") %>
+      <%= f.text_field :facebook_url, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:website, "Company Url") %>
+      <%= f.text_field :website, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:logo, "Upload Logo Image") %>
+      <%= f.file_field :logo %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:header_color, "Header Color") %>
+      <%= f.text_field :header_color, :class => "w250px color" %>
+  </p>
+  <p class="ctrls">
+      <span class="button-green-fat"><%= f.submit("Go!") %></span>
+      <%= link_to("Cancel", "javascript:history.back();", :class => "alter-link") if current_user.profile%>
+  </p>
+<% end %>

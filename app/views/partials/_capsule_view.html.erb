@@ -1,0 +1,34 @@
+<script type="text/javascript">
+    jQuery(function() {
+        jQuery('.preview a').lightBox();
+    });
+</script>
+<div class="capsule2 type-2">
+    <div class="cinner">
+          <h4><%= product.name %></h4>
+
+        <div class="view">
+            <span class="preview">
+                <%= link_to(image_tag(product.image.url, :size => "215x290"), product.image.url,  :title => product.name) %>                
+            </span>
+            
+            <div class="fb-bend">
+              <%= link_to("Facebook", "http://www.facebook.com/sharer.php?u=%s&t=Say your price"%[capsule_url(product.id)], :target => "_new",:class => "facebook") %>
+              <%= link_to("Twitter", "http://twitter.com/home?status=%s %s"%[CGI.escape(SHARE_MESSAGE), capsule_url(product.id)], :target => "_new",:class => "twitter") %>
+          </div>
+        </div><!-- .view -->
+
+        <div class="info">
+            <p>
+                <span class="button-green"><%= button_to_function("Say Your Price!", "var f = document.forms['submit_search_form'];$('name').value='#{product.name}';f.submit();return false;") %></span>
+            </p>
+            <div class="divider"></div>
+            <p><%= "Regular Price : " + number_to_currency(product.regular_price, :precision => 0) %></p>
+            <div><%= product.description %></div>
+            <p><%= link_to(capsule_url(product.id.to_s), capsule_path(product.id), :class => "myprice") %></p>
+        </div><!-- .info -->
+    </div><!-- .cinner -->
+    <div class="ctl"></div><div class="ctc"></div><div class="ctr"></div>
+    <div class="cml"></div><div class="cmr"></div>
+    <div class="cbl"></div><div class="cbc"></div><div class="cbr"></div>
+</div><!-- .capsule -->

@@ -1,0 +1,18 @@
+<h1>Products</h1>
+<table border="1" class="t_border">
+    <tr>
+      <td><b>Name</b></td>
+      <td><b>Description</b></td>
+      <td><b>Price</b></td>
+      <td colspan="2"><b>Action</b></td>
+    </tr>
+    <% for product in @products %>
+    <tr id="product_<%=product.id%>" >
+      <td><%= product.name %></td>
+      <td><%= truncate(product.description, :length => 100) %></td>
+      <td><%= number_to_currency(product.regular_price, :precision => 0) %></td>
+      <td><%= link_to(content_tag(:span, "Edit"), edit_product_path(product.id)) %></td>
+      <td><%#= link_to_remote(content_tag(:span, "Remove"), :url => {:controller => :products, :action => :destroy_product, :id => product.id}, :confirm => "Are you sure?", :html => { :class => ""}) %></td>
+    </tr>
+    <% end %>
+</table>

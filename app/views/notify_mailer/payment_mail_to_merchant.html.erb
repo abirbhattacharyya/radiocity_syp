@@ -1,0 +1,52 @@
+<% first_profile = (@payment.offer.product || @payment.offer.buyer).user.profile %>
+<p>
+  Hi,<br />
+  This confirms your reservation at:
+</p>
+<p>
+  The Perry South Beach Hotel<br />
+  2377 Collins Avenue Miami Beach, FL 33139<br />
+  (305) 604-1000<br />
+  p.reservations@perrysouthbeachhotel.com<br />
+</p>
+<p>
+  Transaction Code: <%=@payment.transaction_id %><br />
+  <b>Check In:</b> <%= @payment.arrival_date.strftime("%A, %B %d, 4PM") %><br />
+  <b>Check Out:</b> <%= @payment.departure_date.strftime("%A, %B %d, 11AM") %><br />
+  # Of Nights: <%= @payment.no_of_nights %><br /><br />
+
+  <b>Room Type:</b> <%= (@payment.offer.product || @payment.offer.buyer).name %> +FREE 375 ml bottle of Patrón Silver tequila
+  <br /><br />
+  Your Total Cost: <%= number_to_currency((@payment.price), :precision => 0) %><br />
+
+  Guest Name: <%= "%s %s" % [@payment.first_name, @payment.last_name] %><br />
+  <%= @payment.email %><br />
+  Last 4 of credit card=<%= @payment.cc_no.to_s[-4, 4] %>
+</p>
+<p>
+  We will charge your credit card <%= number_to_currency((@payment.deposited_amount), :precision => 2) %> for a deposit<br />
+  Please cancel within 72 hours to avoid the cancelation fee of <%= number_to_currency((@payment.deposited_amount), :precision => 2) %>. Upon arrival you will pay (Total Cost-Deposit).<br />
+  *10.4% Tax is not included in this price<br />
+</p>
+<p>
+  Have a great stay.<br />
+  The Perry South Beach Hotel<br />
+</p>
+
+<p>
+  Deposit Amount:<%= number_to_currency((@payment.deposited_amount), :precision => 2) %> <br/>
+  Dealkat Commissions (15%)=<%=number_to_currency((@payment.price.to_f * 15/100), :precision => 2) %><br/>
+  Paypal Payment Processing Costs=<%=number_to_currency((@payment.price.to_f * 0.48/100), :precision => 2) %><br/>
+  Perry To Charge <%=number_to_currency((@payment.price - @payment.deposited_amount), :precision => 2) %><br/>
+</p>
+<p>
+  Encrypted Credit Card #:<%= @payment.cc_no %><br />
+  Expiration Date: <%= "%s, %s" % [Payment::Months.find{|key, value| value == @payment.cc_expiry_m}[0], @payment.cc_expiry_y] %><br />
+  Billing Zip Code: <%= @payment.postal_code %><br />
+</p>
+  
+<p>
+  Thank you for your business.<br/>
+  Dealkat Corporation<br/>
+  415.323.3506
+</p>

@@ -1,0 +1,117 @@
+<script type="text/javascript">
+    jQuery(function() {
+        jQuery('.preview a').lightBox();
+    });
+</script>
+<% offer_token = (session[:_csrf_token] ||= SecureRandom.base64(32)) %>
+<% @last_offer = product.offers.last(:conditions => ["ip = ? and token = ?", request.remote_ip, offer_token]) %>
+<% @offer = product.offers.last(:conditions => ["ip = ? and token =? and response IS NULL", request.remote_ip, offer_token]) %>
+
+<div class="capsule2 type-2">
+    <div class="cinner">
+        <h4><%= product.name %></h4>
+
+        <div class="view">
+            <span class="preview">
+                <%= link_to(image_tag(product.image.url, :size => "215x290"), product.image.url,  :title => product.name) %>                
+            </span>
+            
+            <div class="fb-bend">
+              <%= link_to("Facebook", "http://www.facebook.com/sharer.php?u=%s&t=Say your price"%[capsule_url(product.id)], :target => "_new",:class => "facebook") %>
+              <%= link_to("Twitter", "http://twitter.com/home?status=%s %s"%[CGI.escape(SHARE_MESSAGE), capsule_url(product.id)], :target => "_new",:class => "twitter") %>
+          </div>
+        </div><!-- .view -->
+
+        <div class="info">
+            <div class="ctrl-box">
+                <div class="sinner">
+
+                  <% if logged_in? and product.user == current_user %>
+                      <% form_tag capsule_path(product.id), :id => "submit_form" do %>
+                      <h2>Total Price= $<%= number_with_delimiter(product.reg_price(session[:no_of_tickets])) %></h2>
+                      <p>
+                          <label>Your offer?</label>
+                          <%= text_field_tag :price, '', :class => "w120px", :maxLength => 4, :onKeyPress => "return keyAllowed(event,'0123456789')", :onblur => "this.value=removeChars(this.value)" %>
+                      </p>
+                      <p>
+                          <span class="button-green-ctrl disabled"><input type="submit" name="" value="Say Your Price!" disabled="disabled"/></span>
+                      </p>
+                      <% end %>
+                  <% else %>
+                      <% if @last_offer %>
+                          <% if @last_offer.accepted? %>
+                              <%= form_tag payments_path(@last_offer.id) do %>
+                                  <h2>Your Price: <%=(@last_offer.price.ceil > 0) ? "$" + number_with_delimiter(@last_offer.price.ceil) : "Free of cost" %></h2>
+                                  <p class="ctrls">
+                                    <span class="button-green-ctrl"><%= submit_tag "Pay Now!" %></span>
+                                  </p>
+                              <% end %>
+                          <% elsif @last_offer.counter? or @last_offer.last? %>
+                              <%= form_tag capsule_path(product.id), :id => "submit_form" do %>
+                                  <%= hidden_field_tag(:submit_button, "counter") %>
+                                  <h2 class="long"><%= (@last_offer.counter?) ? "Current Offer" : "Best Offer" %> : <%= (@last_offer.price.ceil > 0) ? "$" + number_with_delimiter(@last_offer.price.ceil) : "Free of cost" %></h2>
+                                  <p class="ctrl">
+                                      
+                                      <span class="button-green-ctrl"><%= button_to_function("Yes", "var f = document.forms['submit_form'];$('#submit_button').val('yes');f.submit();return false;") %></span>
+                                      <span class="button-red-ctrl"><%= button_to_function("No", "var f = document.forms['submit_form'];$('#submit_button').val('no');f.submit();return false;") %></span>
+                                  </p>
+                                  <% if(@last_offer.counter?) %>
+                                    <p class="ctrl">
+                                        <label>or your counter offer?</label>
+                                        <%= text_field_tag :price, '', :class => "w120px", :maxLength => 4, :onKeyPress => "return keyAllowed(event,'0123456789')", :onblur => "this.value=removeChars(this.value)" %>
+                                    </p>
+                                    <p class="ctrl">
+                                        <span class="button-orange-ctrl-fat"><%= submit_tag "Counter" %></span>
+                                    </p>
+                                  <% end %>
+                              <% end %>
+                          <% else %>
+                              <%= form_tag capsule_path(product.id), :id => "submit_form" do %>
+                                  <%= hidden_field_tag(:submit_button, "counter") %>
+                                  <h2>Say Your Price</h2>
+
+                                  <p class="ctrl">
+                                      <label>How much($)?</label>
+                                      <%= text_field_tag :price, '', :class => "w120px", :maxLength => 4, :onKeyPress => "return keyAllowed(event,'0123456789')", :onblur => "this.value=removeChars(this.value)" %>
+                                  </p>
+                                  <p class="ctrls">
+                                      <span class="button-green-ctrl"><%= submit_tag "Go!" %></span>
+                                  </p>
+                              <% end %>
+                          <% end %>
+                      <% else %>
+                          <%= form_tag capsule_path(product.id), :id => "submit_form" do %>
+                              <h2>Say Your Price</h2>
+
+                              <p class="ctrl">
+                                  <label>How much($)?</label>
+                                  <%= text_field_tag :price, '', :class => "w120px", :maxLength => 4, :onKeyPress => "return keyAllowed(event,'0123456789')", :onblur => "this.value=removeChars(this.value)" %>
+                              </p>
+                              <p class="ctrls">
+                                  <span class="button-green-ctrl-fat"><%= submit_tag "Go!" %></span>
+                              </p>
+                          <% end %>
+                      <% end %>
+                  <% end %>
+
+                </div><!-- .sinner -->
+                <div class="stl"></div><div class="str"></div>
+                <div class="sbl"></div><div class="sbr"></div>
+            </div><!-- .sbox -->
+
+            <div class="divider"></div>            
+            <p>
+              <%= "Price : " + number_to_currency(product.regular_price, :precision => 0) %>
+              <% unless product.is_package? %>
+                <br /><%= "Quantity : #{session[:no_of_tickets].to_i}" %>
+                <br /><%= "Total Price : " + number_to_currency(product.reg_price(session[:no_of_tickets]), :precision => 0) %>
+              <% end %>
+            </p>
+            <div><%= product.description %></div>
+            <p><%= link_to(capsule_url(product.id.to_s), "javascript:void();", :class => "myprice", :onclick => "var f = document.forms['submit_search_form'];$('name').value='#{product.name}';f.submit();return false;") %></p>
+        </div><!-- .info -->
+    </div><!-- .cinner -->
+    <div class="ctl"></div><div class="ctc"></div><div class="ctr"></div>
+    <div class="cml"></div><div class="cmr"></div>
+    <div class="cbl"></div><div class="cbc"></div><div class="cbr"></div>
+</div><!-- .capsule -->

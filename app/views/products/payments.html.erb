@@ -1,0 +1,98 @@
+<h1>Hey, your payment info is safe and secure</h1>
+
+<%= form_for :payment, :url => payments_path(@offer.id) do |f| %>
+  <%= f.hidden_field :price, :value => @offer.price %>
+  <p class="ctrl">
+      <b>Product</b>
+      <%= label_tag :products, @offer.product.name %>
+  </p>
+  <p class="ctrl">
+      <b>Price</b>
+      <%= label_tag(:price, number_to_currency(@offer.price, :precision => 2)) %>
+  </p>
+  <p class="ctrl">
+      <label>First Name</label>
+      <%= f.text_field :first_name, :class => "w250px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')" %>
+  </p>
+  <p class="ctrl">
+      <label>Last Name</label>
+      <%= f.text_field :last_name, :class => "w250px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')" %>
+  </p>
+  <p class="ctrl">
+      <label>Address *</label>
+      <%= f.text_field :street1, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <label>City *</label>
+      <%= f.text_field :city, :class => "w250px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')" %>
+  </p>
+  <p class="ctrl">
+      <label>State *</label>
+      <%= f.select :state, Carmen.states, {}, :class => "w250px" %>
+      
+  </p>
+  <p class="ctrl">
+      <label>Zip *</label>
+      <%= f.text_field :postal_code, :class => "w250px", :onKeyPress => "return keyAllowed(event,'#{("0".."9").to_a * ""} ')" %>
+  </p>
+  <p class="ctrl">
+      <label>Country *</label>
+      <%= f.select :country, options_for_select(["USA"]), {}, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <label>Phone Number *</label>
+      <%= f.text_field :phone, :class => "w250px", :onKeyPress => "return keyAllowed(event,'#{("0".."9").to_a * ""} ')" %>
+  </p>
+  <p class="ctrl">
+      <label>E-mail Address *</label>
+      <%= f.text_field :email, :class => "w250px" %>
+  </p>
+  <h2>Payment Information:</h2>
+  <p class="ctrl">
+      <label>Card Type *</label>
+      <%= f.select :cc_type, (Payment::CARD_TYPES.sort!), {}, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <label>Credit Card Number *</label>
+      <%= f.text_field :cc_number, :maxLength => 16, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+  </p>
+  <p class="ctrl">
+      <label>Expiration Date *</label>
+      <%= f.select :cc_expiry_m1, (Payment.month_options((Date.today.month))).collect{|i| [i[0].titleize, i[1]]}, {:selected => @month}, :id => "cc_expiry_m1",:class => "expire_select" %>
+      <%= f.select :cc_expiry_m2, (Payment.month_options(1)).collect{|i| [i[0].titleize, i[1]]}, {:selected => @month}, :id => "cc_expiry_m2" ,:class => "expire_select"%>
+      <%= f.select :cc_expiry_y, ((Date.today.year)...(Date.today.year+7)).collect{|i| [i,i]}, {}, :onchange => "if(this.value==#{Date.today.year}){$('#cc_expiry_m1').show();$('#cc_expiry_m2').hide();}else{$('#cc_expiry_m2').show();$('#cc_expiry_m1').hide();}" ,:class => "expire_select"%>
+  </p>
+  <p class="ctrl">
+      <label>3 or 4 digit security code *</label>
+      <%= f.password_field :cvv, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+  </p>
+  <p class="ctrls">
+      <span class="button-green"><%= f.submit("Pay!") %></span>
+  </p>
+<% end %>
+
+  <%= javascript_tag do %>
+      <% if @payment %>
+        <% if @payment.cc_expiry_y == Date.today.year %>
+            $('#cc_expiry_m2').hide();
+        <% else %>
+            $('#cc_expiry_m1').hide();
+        <% end %>
+      <% else %>
+          $('#cc_expiry_m2').hide();
+      <% end %>
+    jQuery(document).ready(function(){
+     if (jQuery("#payment_cc_type").val() == "american_express"){
+      jQuery("#payment_cc_number").attr("maxlength",15);
+     }
+     else
+      jQuery("#payment_cc_number").attr("maxlength",16);     
+     jQuery("#payment_cc_type").change(function(){
+        jQuery("#payment_cc_number").attr("value","");
+        if (this.value == "american_express")
+          jQuery("#payment_cc_number").attr("maxlength",15);
+        else
+          jQuery("#payment_cc_number").attr("maxlength",16);
+     });
+   });
+  <% end %>

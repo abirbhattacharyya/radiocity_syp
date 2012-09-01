@@ -1,0 +1,46 @@
+<h1>What are your product details?</h1>
+<%#=@product.inspect%>
+<%#= error_messages_for(:product, :order => [:name, :description, :image, :quantity, :regular_price, :target_price], :message => "", :header_message => "")%>
+<%=form_for @product, :html => {:multipart => true, :id => "submit_form"} do |f| %>
+  <p class="ctrl">
+      <%= label_tag(:name, "Product Name?") %>
+      <%= f.text_field :name, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:description, "Description") %>
+      <%= f.text_area :description, :size => "33x5" %>
+  </p>
+  <p class="ctrl">
+    <span id="file_field_div1">
+      <%= label_tag(:image, "Upload picture (250 pixels by 350 pixels)") %>
+      <%= f.file_field :image %>
+      <%=link_to "or Image Url","javascript:void(0)",:onclick => "$('#file_field_div1').hide();$('#url_field_div1').show();"%>
+    </span>
+    <span id ="url_field_div1">
+      <%= label_tag(:image, "Image URL") %>
+      <%= f.text_field :image_remote_url, :class => "w250px" %>
+      <%=link_to "or Upload Image","javascript:void(0)",:onclick => "$('#file_field_div1').show();$('#url_field_div1').hide();"%>
+    </span>
+  </p>
+
+  <p class="ctrl">
+      <%= label_tag(:quantity, "Quantity? (Skip if unlimited)") %>
+      <%= f.text_field :quantity, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:regular_price, "Regular Price ($)?") %>
+      <%= f.text_field :regular_price, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:target_price, "Minimum I would sell for?") %>
+      <%= f.text_field :target_price, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %><br />
+      <span class="terms">never revealed to buyers</span>
+  </p>
+  <p class="ctrls">
+      <span class="button-green"><%= submit_tag "Update" %></span>
+  </p>
+<% end %>
+<script type="text/javascript">
+  $("#url_field_div1").hide();
+  $("#url_field_div2").hide();
+</script>

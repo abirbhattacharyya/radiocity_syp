@@ -1,0 +1,47 @@
+<style type="text/css">
+
+/* header */
+
+#header {
+    background: <%= "#%s" %[(first_profile) ? first_profile.header_color.downcase : "c2a983"] %>;
+    overflow: hidden;
+    width: 100%;
+    height: 83px;
+    }
+
+    #header .logo {
+        text-indent: -999px;
+        background: url("<%= (first_profile) ? first_profile.logo.url(:original, false) : "/assets/mylogo.jpg" %>") center center no-repeat;
+        width: 89px;
+        height: 83px;
+        float: left;
+        }
+
+    #header UL {
+        margin: 55px 0 0 17px;
+        float: left;
+        }
+
+        #header UL LI {
+            margin-right: 20px;
+            float: left;
+            }
+
+            #header UL LI A {
+                color: #fff;
+                font-size: 14px;
+                font-weight: bold;
+                text-decoration: none;
+                display: inline-block;
+                padding: 3px 5px;
+                }
+
+            #header UL LI.current A {
+                background: #<%= (first_profile) ? "367e70" : "cab492" %>;
+                }
+
+            #header UL LI A:hover {
+                background: #<%= (first_profile) ? "367e70" : "cab492" %>;
+                }
+
+</style>

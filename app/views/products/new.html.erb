@@ -1,0 +1,52 @@
+<%= render :partial => "/partials/my_dashboard" if current_user.products.count > 0 %>
+<h1>Hey, please tell us your product details!</h1>
+
+<%= form_for :product, :url => products_path, :html => {:multipart => true, :id => "submit_form"} do |f| %>
+  <%= hidden_field_tag :submit_button, "add" %>
+  <p class="ctrl">
+      <%= label_tag(:name, "Product Name?") %>
+      <%= f.text_field :name, :class => "w250px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:description, "Description") %>
+      <%= f.text_area :description, :size => "33x5" %>
+  </p>
+  <p class="ctrl">
+    <span id="file_field_div1">
+      <%= label_tag(:image, "Upload picture (250 pixels by 350 pixels)") %>
+      <%= f.file_field :front_image %>
+      <%=link_to "or Image Url","javascript:void(0)",:onclick => "$('#file_field_div1').hide();$('#url_field_div1').show();"%>
+    </span>
+    <span id ="url_field_div1">
+      <%= label_tag(:image, "Image URL") %>
+      <%= f.text_field :image_remote_url, :class => "w250px" %>
+      <%=link_to "or Upload Image","javascript:void(0)",:onclick => "$('#file_field_div1').show();$('#url_field_div1').hide();"%>
+    </span>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:quantity, "Quantity? (Skip if unlimited)") %>
+      <%= f.text_field :quantity, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:regular_price, "Regular Price ($)?") %>
+      <%= f.text_field :regular_price, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:target_price, "Minimum price I would sell for?($)") %>
+      <%= f.text_field :target_price, :maxLength => 4, :class => "w250px", :onKeyPress => "return keyAllowed(event,'0123456789')", :onKeyUp => "isNumber(this);" %><br />
+      <span class="terms">never revealed to buyers</span>
+  </p>
+  <p>
+      <%= label_tag(:product_type, "Product Type?") %>
+      <%= f.select :product_type, Product::TYPES.collect{|k, v| [k.to_s.pluralize.titleize, v]}, {}, :class => "w250px" %>
+  </p>
+  <p class="ctrls">
+      <span class="button-green"><%= submit_tag "Add" %></span>
+      <%= link_to("Finish", "javascript:void();", :class => "alter-link", :onclick => "var f = document.forms['submit_form'];$('#submit_button').val('finish');f.submit();return false;") %>
+      <%= link_to("Cancel", url_for(:back), :class => "alter-link") if current_user.products.count > 0 %>
+  </p>
+<% end %>
+<script type="text/javascript">
+  $("#url_field_div1").hide();
+  $("#url_field_div2").hide();
+</script>

@@ -1,0 +1,17 @@
+<h1 class="home">Want spectacular Radio City Christmas Deals? Rock on & Let's Play?</h1>
+
+<div class="intro-steps">
+    <%= link_to(content_tag(:span, 1)+label_tag(:label1, "Check out cool tickets"), say_your_price_path(1)) %>
+    <%= link_to(content_tag(:span, 2)+label_tag(:label2, "Rock & Deal?"), say_your_price_path(2)) %>
+    <%= link_to(content_tag(:span, 3)+label_tag(:label3, "Buy & Rock on"), say_your_price_path(3)) %>
+</div><!-- .steps -->
+
+<div class="intro-slides">
+    <%= link_to(image_tag("/assets/hp1.jpg", :size => "909x460"), say_your_price_path(1)) %>
+    <div class="tl"></div><div class="tr"></div>
+    <div class="bl"></div><div class="br"></div>
+</div><!-- .intro-slides -->
+
+<p class="intro-ctrls">
+    <%= link_to(content_tag(:span, "Let's make a deal!"), say_your_price_path, :class => "button-green") %>
+</p>

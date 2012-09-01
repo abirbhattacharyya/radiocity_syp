@@ -1,0 +1,30 @@
+<%
+  product = @payment.offer.product
+  profile = product.user.profile
+  price = product.reg_price(@payment.quantity)
+%>
+<h1>Congratulations! You won.</h1>
+
+<div class="capsule2 w550px">
+
+    <div class="cinner">
+        <span class="expires">
+          <%#=image_tag(profile.logo.url, :size => "65x53")%>
+        </span>
+        <h3>TransactionId: <%=@payment.transaction_id %></h3>
+        <p>
+          You Saved: <%= number_to_currency((price-@payment.price), :precision => 0) %><br />
+          Total Price: <%= number_to_currency((@payment.price), :precision => 0) %><br />
+          <% if product.is_ticket? %>
+            No of tickets: <%= number_with_delimiter(@payment.quantity) %><br />
+          <%end%>
+        </p>
+        <p>
+            <b><%= @payment.offer.product.name %></b><br />
+            <%= @payment.offer.product.description %>
+        </p>
+    </div><!-- .cinner -->
+    <div class="ctl"></div><div class="ctc"></div><div class="ctr"></div>
+    <div class="cml"></div><div class="cmr"></div>
+    <div class="cbl"></div><div class="cbc"></div><div class="cbr"></div>
+</div><!-- .capsule3.terms -->

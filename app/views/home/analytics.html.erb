@@ -1,0 +1,49 @@
+<%= javascript_include_tag :highcharts %>
+
+<%= render :partial => "/partials/my_dashboard" %>
+<h1><%= @head_line %> (<%= @page %> of <%= @size %>)</h1>
+<div class="columns">
+    <div class="column wide">
+
+        <%# if @chart_data1 and @chart_data1.size > 0 %>
+          <%= form_tag analytics_path, :id => "page_form", :style => "display:none;" do %>
+            <%= hidden_field_tag(:page, @page) %>
+          <% end %>
+        <%# end %>
+
+        <div class="capsule">
+            <div class="cinner">
+                <%= high_chart("my_id", @chart) do |c|
+                 "options.tooltip.formatter = function() { return  this.x + ': ' + this.y; }"
+                end
+                %>
+            </div><!-- .cinner -->
+            <div class="ctl"></div><div class="ctc"></div><div class="ctr"></div>
+            <div class="cml"></div><div class="cmr"></div>
+            <div class="cbl"></div><div class="cbc"></div><div class="cbr"></div>
+        </div><!-- .capsule -->
+
+        <p class="paging">
+          <% if @page.to_i != @post_pages %>
+              <% if(@page.to_i <= 1)%>
+                  <%= link_to("Next #{@per_page}", "javascript:void();", :class => "next", :onclick => "var f = document.forms['page_form'];jQuery('#page').val(2);f.submit();return false;") %>
+                  <% 1.upto(@size).each do |page| %>
+                    <%= link_to("#{page}", "javascript:void();", :class => (@page == page) ? "current" : nil, :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{page.to_i});f.submit();return false;") %>
+                  <% end %>
+              <% else %>
+                  <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "prev", :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{@page.to_i-1});f.submit();return false;") %>
+                  <%= link_to("Next #{@per_page}", "javascript:void();", :class => "next", :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{@page.to_i+1});f.submit();return false;") %>
+                  <% 1.upto(@size).each do |page| %>
+                    <%= link_to("#{page}", "javascript:void();", :class => (@page == page) ? "current" : nil, :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{page.to_i});f.submit();return false;") %>
+                  <% end %>
+              <% end %>
+          <% elsif @page.to_i > 1 %>
+              <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "prev", :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{@page.to_i-1});f.submit();return false;") %>
+              <% 1.upto(@size).each do |page| %>
+                <%= link_to("#{page}", "javascript:void();", :class => (@page == page) ? "current" : nil, :onclick => "var f = document.forms['page_form'];jQuery('#page').val(#{page.to_i});f.submit();return false;") %>
+              <% end %>
+          <% end -%>
+        </p>
+
+    </div><!-- .column.wide -->
+</div><!-- .columns -->

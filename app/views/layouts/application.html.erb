@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+  	<title>Radio City Christmas Spectacular Deals</title>
+    <link rel="icon"  type="image/png" href="/assets/favicon.ico" />
+    <link rel="shortcut icon" href="/assets/favicon.ico" type="image/x-icon">
+
+    <%= stylesheet_link_tag  "application", "global", "notification", "jquery.lightbox-0.5" %>
+    <%= javascript_include_tag "application", "common" %>
+    <%= javascript_include_tag "jquery-1.7.2.min", "jquery.lightbox-0.5.min" %>
+    <%= javascript_include_tag "jquery.bar", "jcarousellite_1.0.1c4" %>
+
+    <%= javascript_tag do %>
+        jQuery.noConflict();
+        jQuery(function() {
+            jQuery("#newsticker-jcarousellite").jCarouselLite({
+                btnPlay: ".play", btnPause: ".pause", vertical: true, hoverPause:true,
+                stop: false, visible: 3, auto:2000, speed:2300
+            });
+        });
+    <% end %>
+
+    <% first_profile = Profile.first %>
+    <%= render :partial => "/layouts/header_style", :locals => {:first_profile => first_profile} %>
+
+    <%= csrf_meta_tags %>
+  </head>
+
+  <body>
+    <%= content_tag(:div, nil, :id => "notification", :class => "message-notification") %>
+    <div id="layout">
+        <div id="header">
+            <a class="logo" href="/">Barnes</a>
+            <ul>
+                <%= content_tag(:li, link_to('Home', root_path)) if request.path != root_path %>
+                <% if logged_in? %>
+                    <%= content_tag(:li, link_to('Sign Out', logout_path)) %>
+                <% else %>
+                    <%= content_tag(:li, link_to('Say A Price', ticket_book_path), :class => ([say_your_price_path].include? request.path) ? "current" : nil) %>
+                    <%= content_tag(:li, link_to('Package Deals?', say_your_price_path(Product::TYPES[:package])), :class => ([say_your_price_path(Product::TYPES[:package])].include? request.path) ? "current" : nil) %>
+
+                    <%= content_tag(:li, link_to("Winners", winners_path), :class => ([winners_path].include? request.path) ? "current" : nil) %>
+                <% end %>
+            </ul>
+        </div><!-- #header -->
+
+        <%= content_tag :div, :id => "content" do %>
+            <%= yield %>
+        <% end %>
+
+        <div id="footer">
+            <div class="copyright">&copy; <%=Date.today.year%> <span>engine by <a href="#">dealkat</a></span></div>
+            <%= content_tag :ul do %>
+                <%  if logged_in? %>
+                  <%= content_tag(:li, link_to("Edit Profile", profile_path), :class => ([profile_path].include? request.path) ? "current" : nil) if current_user.profile %>
+                <% end %>
+            <% end %>
+            <% if first_profile %>
+              <address>
+                  <%= first_profile.name %>&nbsp;
+                  <%= first_profile.address %>&nbsp;
+                  <%#= number_to_phone(first_profile.phone, :delimiter => ".") + "; " %>
+                  <%= auto_link(first_profile.email) %>
+              </address>
+            <% end %>
+        </div><!-- #footer -->
+    </div><!-- #layout -->
+    <% if flash[:error] or flash[:notice] %>
+      <%= javascript_tag do %>
+          showNotification("<%= flash[:error] || flash[:notice] %>", 'error', 10000);
+          <% flash.discard %>
+      <% end %>
+    <% end %>
+
+  </body>
+</html>
